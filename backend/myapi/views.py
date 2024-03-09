@@ -4,10 +4,41 @@ from django.views.decorators.csrf import csrf_exempt
 import base64
 from pymongo import MongoClient,DESCENDING
 from datetime import datetime
+import os
+from dotenv import load_dotenv
+import google.generativeai as genai
+import PIL.Image
+
 
 client = MongoClient("mongodb://localhost:27017/")
 db = client['trinitt']
 collection=db['data']
+
+@csrf_exempt
+def generate_content_view(request):
+    if request.method == 'POST':
+        # Load environment variables
+        load_dotenv()
+        gemini_key = os.getenv("GEMINI_API_KEY")
+
+    # Configure GenAI with API key
+        genai.configure(api_key=gemini_key)
+        # Get the uploaded image
+        image = request.FILES.get('file')
+        
+        # Open the image using PIL
+        img = PIL.Image.open(image)
+        
+        # Generate content using the GenAI model
+        model = genai.GenerativeModel('gemini-pro-vision')
+        response1 = model.generate_content(["just retrun the coordinates only of the location corresponding to the image, nothing else", img])
+        response2 = model.generate_content(["Describe about the location of the image", img])
+        
+        # Return generated content as JSON response
+        return JsonResponse({'generated_content': [response1.text, response2.text]})
+    else:
+        # Return error response if no image file uploaded
+        return JsonResponse({'error': 'No image file uploaded'}, status=400)
 
 @csrf_exempt
 def upload_image(request):
