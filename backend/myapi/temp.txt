@@ -1,0 +1,18 @@
+# pil_im = PILImage.open(io.BytesIO(image_bytes))
+# if pil_im.mode == 'RGBA':
+#     pil_im = pil_im.convert('RGB')
+
+# im_bytes = io.BytesIO()
+# pil_im.save(im_bytes, format='JPEG')
+# image_bytes = im_bytes.getvalue()
+
+# def convert_bytearray_to_image(byte_array):
+#     bytes_data = bytes(byte_array)  
+#     image = PILImage.open(io.BytesIO(bytes_data))
+#     return image
+
+# def save_image_to_temp_file(image):
+#     temp_dir = tempfile.mkdtemp()
+#     temp_file_path = os.path.join(temp_dir, 'image.png')
+#     image.save(temp_file_path)
+#     return temp_file_path
